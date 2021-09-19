@@ -1,0 +1,55 @@
+public class DBWithUserInputs {
+	static Student student = new Student();
+	private final static Scanner SC = new Scanner(System.in);
+	static final String URL = "jdbc:mysql://localhost:3306/blz";
+	static final String DB_USER = "root";
+	static final String DB_PASS = "root";
+	final static String INSERT_QUERY = "INSERT INTO student VALUSE(?,?,?);";
+
+	public static void main(String[] args) {
+		userInputs();
+		insertRecord();
+	}
+public static void insertRecord() {
+		Connection con = dbConnection();
+		PreparedStatement stmt;
+		try {
+			stmt = con.prepareStatement(INSERT_QUERY);
+			stmt.setInt(1, 100);
+			stmt.setString(2, "PQRS");
+			stmt.setString(3, "Testing");
+			int count = stmt.executeUpdate();
+			System.out.println(count);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+public static Connection dbConnection() {
+		Connection con = null;
+		// Singleton pattern
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con = DriverManager.getConnection(URL, DB_USER, DB_PASS);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return con;
+	}
+private static void userInputs() {
+		System.out.println("Enter roll Number: ");
+		student.setRollNumber(SC.nextInt());
+		SC.nextLine();
+		System.out.println("Enter Name: ");
+		student.setName(SC.nextLine());
+		System.out.println("Enter City: ");
+		student.setCity(SC.nextLine());
+	}
+}
